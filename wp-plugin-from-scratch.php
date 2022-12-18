@@ -37,3 +37,29 @@ Copyright 2005-2022 Automattic, Inc.
  So, Using the snippets can prevent access from your files (directly) and ensures that your Theme files will be executed within the WordPress environment only.
 */
 defined('ABSPATH') or die('Hey, you can\t access this file, you silly human!');
+class WpPluginFromScratch {
+    
+    function activate() {
+        // generated a Custom post type
+        // flush rewrite rules
+    }
+
+    function deactivate() {
+        // flush rewrite rules
+    }
+
+    function unistall() {
+        // delete a Custom post type
+        // delete all the plugin data from the DB
+    }
+}
+
+if ( class_exists('WpPluginFromScratch') ) {
+    $wpPluginFromScratch = new WpPluginFromScratch();    
+}
+
+// activation
+register_activation_hook( __FILE__, array($wpPluginFromScratch, 'activate'));
+
+// deactivation
+register_deactivation_hook( __FILE__, array($wpPluginFromScratch, 'deactivate'));
