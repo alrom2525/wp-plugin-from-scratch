@@ -30,3 +30,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Copyright 2005-2022 Automattic, Inc.
 */
+
+/*  
+ Securing WordPress, the basic is to check the global variable.
+ It prevent public user to directly access your .php files through URL. Because if your file contains some I/O operations it can eventually be triggered (by an attacker) and this might cause unexpected behavior.
+ So, Using the snippets can prevent access from your files (directly) and ensures that your Theme files will be executed within the WordPress environment only.
+*/
+defined('ABSPATH') or die('Hey, you can\t access this file, you silly human!');
