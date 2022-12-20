@@ -38,20 +38,30 @@ Copyright 2005-2022 Automattic, Inc.
 */
 defined('ABSPATH') or die('Hey, you can\t access this file, you silly human!');
 class WpPluginFromScratch {
-    
+    function __construct() {
+        add_action( 'init', array( $this, 'custom_post_type' ) );
+    }
+
     function activate() {
-        // generated a Custom post type
-        // flush rewrite rules
+        // generated a CPT
+        $this->custom_post_type();
+        
+        flush_rewrite_rules();
     }
 
     function deactivate() {
-        // flush rewrite rules
+        flush_rewrite_rules();
     }
 
     function unistall() {
         // delete a Custom post type
         // delete all the plugin data from the DB
     }
+
+    function custom_post_type() {
+        register_post_type( 'book', ['public' => true, 'label' => 'Books'] );
+    }
+    
 }
 
 if ( class_exists('WpPluginFromScratch') ) {
