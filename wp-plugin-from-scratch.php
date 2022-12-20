@@ -53,11 +53,6 @@ class WpPluginFromScratch {
         flush_rewrite_rules();
     }
 
-    function unistall() {
-        // delete a Custom post type
-        // delete all the plugin data from the DB
-    }
-
     function custom_post_type() {
         register_post_type( 'book', ['public' => true, 'label' => 'Books'] );
     }
