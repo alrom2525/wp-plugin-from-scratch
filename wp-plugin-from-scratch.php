@@ -37,44 +37,47 @@ Copyright 2005-2022 Automattic, Inc.
  So, Using the snippets can prevent access from your files (directly) and ensures that your Theme files will be executed within the WordPress environment only.
 */
 defined('ABSPATH') or die('Hey, you can\t access this file, you silly human!');
-class WpPluginFromScratch {
-    function __construct() {
-        add_action( 'init', array( $this, 'custom_post_type' ) );
-    }
-    
-    function register() {
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue') );
-    }
-
-    function activate() {
-        // generated a CPT
-        $this->custom_post_type();
-        
-        flush_rewrite_rules();
-    }
-
-    function deactivate() {
-        flush_rewrite_rules();
-    }
-
-    function custom_post_type() {
-        register_post_type( 'book', ['public' => true, 'label' => 'Books'] );
-    }
-    
-    function enqueue () {
-        // enqueue all our scripts
-        wp_enqueue_style('mypluginstyle', plugins_url( '/assets/mystyle.css', __FILE__ ) );
-        wp_enqueue_script('mypluginscript', plugins_url( '/assets/myscript.js', __FILE__ ) );
-    }
-}
 
 if ( class_exists('WpPluginFromScratch') ) {
+    class WpPluginFromScratch {
+        
+        function register() {
+            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue') );
+        }
+
+        function activate() {
+            require_once plugin_dir_path( __FILE__ ) . 'inc/wp-plugin-from-scratch-activate.php';
+            WpPluginFromScratchActivate::activate();
+        }
+
+        function deactivate() {
+            flush_rewrite_rules();
+        }
+
+        protected function create_post_type() {
+            add_action( 'init', array( $this, 'custom_post_type' ) );
+        }
+
+        function custom_post_type() {
+            register_post_type( 'book', ['public' => true, 'label' => 'Books'] );
+        }
+        
+        function enqueue () {
+            // enqueue all our scripts
+            wp_enqueue_style('mypluginstyle', plugins_url( '/assets/mystyle.css', __FILE__ ) );
+            wp_enqueue_script('mypluginscript', plugins_url( '/assets/myscript.js', __FILE__ ) );
+        }
+
+    }
+
     $wpPluginFromScratch = new WpPluginFromScratch();
     $wpPluginFromScratch->register();
+
+    // activation
+    register_activation_hook( __FILE__, array($wpPluginFromScratch , 'activate'));
+
+    // deactivation 
+    require_once plugin_dir_path( __FILE__ ) . 'inc/wp-plugin-from-scratch-deactivate.php';
+    register_deactivation_hook( __FILE__, array('WpPluginFromScratchDeactivate' , 'deactivate'));
+
 }
-
-// activation
-register_activation_hook( __FILE__, array($wpPluginFromScratch, 'activate'));
-
-// deactivation
-register_deactivation_hook( __FILE__, array($wpPluginFromScratch, 'deactivate'));
